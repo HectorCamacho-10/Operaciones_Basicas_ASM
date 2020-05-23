@@ -1,0 +1,230 @@
+MACRO CURSOR F,C,texto 
+                                           ;Programa divicion de dos nuemros de dos cifras
+    PUSH AX
+    PUSH DX
+    
+    MOV AH,02H
+    MOV DH,F
+    MOV DL,C
+    INT 10H  
+    
+    mov dx,offset texto
+    mov ah,09h
+    int 21h 
+    
+    POP DX
+    POP AX
+    
+ENDM 
+
+
+
+
+DATOS SEGMENT
+  
+
+  TEXTO5 DB "Presione S para salir o C para continura:$"
+                    
+  TEXTO6 DB "INGRESE PRIMER NUMERO:$"
+  TEXTO7 DB "INGRESE SEGUNDO NUMERO:$"
+   
+  TEXTO8 DB "MENU $"          ;Menu 
+  TEXTOA DB "1) DIVIDIR $"  
+  TEXTOC DB "2) SALIR $"
+      
+  TEXTO9 DB "El cociente es:$"
+  TEXTOX DB "El residuo es :$"
+              
+ 
+ TEXTO11 DB "INGRESE OPCION:$"
+ 
+ TEXTO12 DB "FIN DEL PROGRAMA$" 
+ 
+ residuo dB ?
+ cocien dB ? 
+ NUM1 DB ?
+ NUM2 DB ? 
+ VAR  DB ?
+            
+ 
+ENDS 
+
+
+PROGRAMA SEGMENT
+   
+    ASSUME CS:CODIGO, DS:DATOS
+      
+INICIO: 
+     
+      MOV AX,DATOS 
+      MOV DS,AX  
+      
+      
+    
+      CURSOR 1,1,TEXTO5  
+      
+      
+CONTSN:MOV AH,01H
+       INT 21H 
+ 
+       CMP AL,43H
+       JE INGRESO
+       CMP AL,53H
+       JE FIN
+       CMP AL,44H
+       JAE FIN     ;si es mayor igual salta a fin
+       CMP AL,42H
+       JBE FIN   ;menor igual salta a fin
+       
+CONTSN1:MOV AH,07H
+        INT 21H 
+ 
+       CMP AL,31H
+       JE  DIVISION1
+       CMP AL,32H
+       
+       CMP AL,33H
+       JE FIN
+       CMP AL,34H
+       JAE CONTSN1     ;si es mayro igual salta a fin
+       CMP AL,30H
+       JBE CONTSN1     ;menor igual salta a fin
+
+     
+
+       
+INGRESO:
+        CURSOR 3,1,TEXTO8     ;MENU   
+        CURSOR 5,1,TEXTOA
+        
+        CURSOR 7,1,TEXTOC
+        
+        CURSOR 9,1,TEXTO11   ;INGRESE UNA OPCION ALV     
+        JMP CONTSN1   
+        
+DIVISION1:MOV BL,00H
+          MOV VAR,BL
+DIVISION:
+         CURSOR 12,1,TEXTO6  ;Pocicion primer nuemro
+      
+         
+         MOV AH,01H
+         INT 21H 
+         
+         SUB AL,30H
+         MOV BH,AL  ; primer numero en hexa
+         
+         MOV AH,01H
+         INT 21H 
+         
+         SUB AL,30H  ;
+         MOV BL,AL
+         
+         PUSH BX
+         MOV BX,00H
+         
+         CURSOR 13,1,TEXTO7   ;Pocicion segundo nuermo
+         
+         MOV AH,01H
+         INT 21H
+          
+         SUB AL,30H
+         MOV CH,AL  ; segundo numero en hexa 
+           
+         MOV AH,01H
+         INT 21H 
+         
+         SUB AL,30H
+         MOV CL,AL    
+         
+         POP BX
+           
+         CMP CX,BX
+         JA DIVISION
+         
+         
+         MOV AL,0AH ;MULTIPLICAR POR 10 AL SEGMENTO CH Y SE GUARDA EN EL SEGMENTO AL
+         MUL BH 
+         ADD BL,AL
+         MOV NUM1,BL ; NUMERO EN DECIMAL    
+         
+         MOV AL,0AH ;MULTIPLICAR POR 10 AL SEGMENTO CH Y SE GUARDA EN EL SEGMENTO AL
+         MUL CH 
+         ADD CL,AL
+         MOV NUM2,CL ; NUMERO EN DECIMAL
+         
+         MOV AL,VAR
+         CMP AL,32H
+         
+         
+         MOV AL,NUM1
+         MOV CL,NUM2
+         MOV DX,00H
+         
+         div CL
+         mov residuo,AH
+         MOV cocien,AL
+         
+         CMP AH,0AH
+         JAE ACARREO
+         MOV BX,00H  
+         
+         CURSOR 16,1,TEXTOX    
+         
+         MOV DL,residuo
+         ADD DL,30H
+         MOV AH,02h  ;muestras el numero guardado en memoria,"dl"
+         INT 21h  
+         
+         MOV BX,00H 
+                
+COCIENTE:CURSOR 18,1,TEXTO9    
+         
+         MOV DL,cocien 
+         ADD DL,30H
+         MOV AH,02h  ;muestras el numero guardado en memoria,"dl"
+         INT 21h 
+    
+         MOV AH,07H
+         INT 21H    
+         JMP INGRESO
+
+ACARREO: MOV AL,AH
+         MOV AH,00H
+         AAM 
+         
+         ADD AH,30H
+         ADD AL,30H 
+         
+         PUSH AX
+         MOV BX,00H
+         
+         
+         CURSOR 16,29,TEXTOX
+         
+         POP AX
+         PUSH AX
+         MOV DL,AH
+         MOV AH,02H
+         INT 21H
+         
+         POP AX
+         MOV DL,AL
+         MOV AH,02H
+         INT 21H
+         JMP COCIENTE
+         
+
+      
+FIN: 
+     CURSOR 12,29,TEXTO12   ;CURSOR EN EL CENTRO
+     MOV AH,07H 
+     INT 21H    
+     MOV AH,4CH
+     INT 21H
+     
+ENDS
+   
+   END INICIO 
+
+

@@ -1,0 +1,150 @@
+.model small                                  ;Multipicacin de dos numeros de dos cifras
+.stack
+
+.data        
+.code
+   chr1  db ? ;primer digito
+   chr2  db ? ;segundo digito
+   chr3  db ? ;multiplo
+   chr4  db ?
+   r1    db ? ;resultado 1
+   r2    db ? ;resultado 2
+   r3    db ?
+   r4    db ?
+   ac    db 0 ;acarreo
+   ac1   db 0
+.startup
+   ;cls
+   mov ah,00h     
+   mov al,03      
+   int 10h        
+
+   mov ah,01h     ;Function(character read) Guarda en AL
+   int 21h        
+   sub al,30h     ;ajustamos valores
+   mov chr1,al    
+
+   mov ah,01h     
+   int 21h        
+   sub al,30h     ;Ajustamos valores
+   mov chr2,al    
+
+   mov ah,02h     
+   mov dl,'x'     
+   int 21h
+
+   mov ah,01h     ;Function(Read character) Guarda en AL
+   int 21h        
+   sub al,30h    
+   mov chr3,al    
+  
+   mov ah,01h     
+   int 21h        
+   sub al,30h     
+   mov chr4,al    
+
+   mov ah,02h     
+   mov dl,'='     
+   int 21h        
+
+   ;Realizamos operacion   
+  
+   mov al,chr4  ; segundo numero
+   mov bl,chr2  ; primer numero
+   mul bl       ;multiplicar
+   mov ah,0     
+   aam          
+   mov ac1,ah   
+   mov r4,al    
+            
+   mov al,chr4  
+   mov bl,chr1  
+   mul bl       
+   mov r3,al    
+   mov bl,ac1   
+   add r3,bl    
+   mov ah,00h   
+   mov al,r3    
+   aam          
+   mov r3,al    
+   mov ac1,ah   
+
+   mov al,chr3    
+   mov bl,chr2    
+   mul bl         
+   mov Ah,0h      
+   AAM            
+   mov ac,AH      
+   mov r2,AL      
+
+   mov al,chr3    
+   mov bl,chr1    
+   mul bl         
+   mov r1,al      
+   mov bl,ac      
+   add r1,bl      
+   mov ah,00h     
+   mov al,r1      
+   AAM            
+   mov r1,al      
+   mov ac,ah      
+  
+  
+   ;suma final
+   
+  
+  
+   mov ax,0000h   
+  
+   mov al,r3      
+   mov bl,r2      
+   add al,bl      ;sumamos
+   mov ah,00h     
+   aam            
+   mov r3,al      
+   mov r2,ah      
+  
+   mov ax,0000h   
+  
+   mov al,ac1     
+   mov bl,r1      
+   add al,r2      
+   add al,bl      
+   mov ah,00h     
+   aam            
+   mov r1,al      
+   mov r2,ah      
+  
+   mov al,r2     
+   mov bl,ac      
+   add al,bl      
+              
+   mov ac,al      
+  
+ 
+  
+   ;Mostramos resultado
+   mov ah,02h 
+   mov dl,ac
+   add dl,30h
+   int 21h        
+
+   mov ah,02H
+   mov dl,r1
+   add dl,30h
+   int 21h        
+
+                 
+  
+   mov ah,02H
+   mov dl,r3
+   add dl,30h
+   int 21h        
+  
+   mov ah,02H
+   mov dl,r4
+   add dl,30h
+   int 21h        
+  
+.exit
+end  

@@ -1,0 +1,86 @@
+
+.MODEL small                             ;Suma y resta de dos numeros de dos cifras
+.STACK 100h
+
+.DATA
+ms1 DB 10,13,'Ingrese un numero de dos cifras: $'
+ms2 DB 10,13,'La suma es: $'
+ms3 DB 10,13,'La diferencia es: $'
+ms4 DB 10,13,'$'
+m DB ?
+n DB ?
+s DB ?
+d DB ?
+cien DB 100
+
+.CODE
+MOV AX,@DATA
+MOV DS,AX
+MOV AH,9
+LEA DX,ms1
+INT 21H
+MOV AH,1
+INT 21H
+SUB AL,30H
+MOV m,AL
+INT 21H
+SUB AL,30H
+MOV AH,m
+AAD
+MOV m,AL
+MOV AH,9
+LEA DX,ms1
+INT 21H
+MOV AH,1
+INT 21H
+SUB AL,30H
+MOV n,AL
+INT 21H
+SUB AL,30H
+MOV AH,n
+AAD
+MOV n,AL
+
+MOV AH,9
+LEA DX,ms2
+INT 21H
+MOV AL,m
+ADD AL,n
+XOR AH,AH
+DIV cien
+ADD AL,30H
+MOV DL,AL
+MOV AL,AH
+AAM
+ADD AX,3030H
+MOV BX,AX
+MOV AH,2
+INT 21H
+MOV DL,BH
+INT 21H
+MOV DL,BL
+INT 21H
+MOV AH,9
+LEA DX,ms3
+INT 21H
+MOV AL,m
+SUB AL,n
+AAM
+ADD AX,3030H
+MOV BX,AX
+MOV AH,2
+MOV DL,BH
+INT 21H
+MOV DL,BL
+INT 21H
+MOV AH,9
+LEA DX,ms4
+INT 21H
+MOV AH,1
+INT 21H
+
+MOV AH,4ch
+INT 21h
+END
+
+
