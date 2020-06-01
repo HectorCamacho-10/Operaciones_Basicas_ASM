@@ -1,3 +1,58 @@
+
+
+menu macro 
+          lea dx, mensaje
+          mov ah, 09h
+          int 21h   
+          lea dx, mensaje1
+          mov ah, 09h
+          int 21h      
+          lea dx, mensaje2
+          mov ah, 09h
+          int 21h     
+          lea dx, mensaje3
+          mov ah, 09h
+          int 21h
+          lea dx, mensaje4
+          mov ah, 09h
+          int 21h     
+          lea dx, mensaje5
+          mov ah, 09h
+          int 21h  
+          lea dx, mensaje6
+          mov ah, 09h
+          int 21h  
+          
+          linea_nueva    
+                 
+          mov ah,01h
+          int 21h  
+                     
+          xor ah,ah
+          sub al,30h
+          mov cx,2
+          
+            cmp al,1
+            jz suma ;se dirige al metodo suma
+           
+            cmp al,2
+            jz resta ;se dirige al metodo resta
+                                               
+            cmp al,3
+            jz mult ;se dirige al metodo multiplik
+           
+            cmp al,4
+            jz divi ;se dirige al metodo dividir
+           
+            cmp al,5 ;salir del programa
+            jz finn 
+            
+            mov ax,0
+            mov dx,0
+    
+    
+    
+endm
 .model small                 
 .stack  100
 .data  
@@ -36,3 +91,59 @@ mensaje db "ITSVA 6 A$"
     d DB ?
     cien DB 100
 .code
+
+     start:
+         mov dx, @data
+         mov ds ,dx   
+          
+         menu
+          suma: 
+              lea dx, mensaje2
+              mov ah, 09h
+              int 21h  
+              suma
+              
+              bucle
+          .exit 
+          
+          resta:
+              resta
+              
+              
+              bucle
+              
+          .exit
+          mult:
+           
+              
+              multiplicacion
+              
+                     
+              bucle
+              
+              
+          .exit
+          divi: 
+             division
+              
+             
+              
+              
+              bucle
+             
+                
+          .exit
+          finn:
+              lea dx, mensaje6
+              mov ah, 09h
+              int 21h 
+              mov ax, 4c00h
+              int 21h
+          .exit 
+            
+            
+            
+          
+    mov ax, 4c00h
+    int 21h
+end start
